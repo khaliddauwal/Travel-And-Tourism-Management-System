@@ -1,0 +1,280 @@
+openapi: 3.0.0
+info:
+  title: Tourism Management System API
+  description: RESTful API for managing tourism packages, bookings, and users
+  version: 1.0.0
+  contact:
+    name: Tourism Management System
+    email: support@tourismng.com
+
+servers:
+  - url: http://localhost/Tourism-Management-System-main/api/v1
+    description: Development server
+  - url: https://api.tourismng.com/v1
+    description: Production server
+
+paths:
+  /auth/login:
+    post:
+      summary: User login
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                password:
+                  type: string
+                  minLength: 6
+                  example: password123
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/register:
+    post:
+      summary: User registration
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - fullName
+                - email
+                - password
+                - mobileNumber
+              properties:
+                fullName:
+                  type: string
+                  minLength: 2
+                  maxLength: 50
+                  example: John Doe
+                email:
+                  type: string
+                  format: email
+                  example: john@example.com
+                password:
+                  type: string
+                  minLength: 6
+                  example: password123
+                mobileNumber:
+                  type: string
+                  example: "+234-800-123-4567"
+      responses:
+        '201':
+          description: Registration successful
+        '400':
+          description: Validation error or email already exists
+
+  /packages:
+    get:
+      summary: Get all packages with pagination
+      tags:
+        - Packages
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 10
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: type
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Packages retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackagesResponse'
+
+  /packages/{id}:
+    get:
+      summary: Get single package by ID
+      tags:
+        - Packages
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Package retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackageResponse'
+        '404':
+          description: Package not found
+
+components:
+  schemas:
+    AuthResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Login successful
+        data:
+          type: object
+          properties:
+            user:
+              $ref: '#/components/schemas/User'
+            session_id:
+              type: string
+
+    User:
+      type: object
+      properties:
+        fullName:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          format: email
+          example: john@example.com
+        mobileNumber:
+          type: string
+          example: "+234-800-123-4567"
+        registrationDate:
+          type: string
+          format: date-time
+
+    Package:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Lagos City Explorer
+        type:
+          type: string
+          example: City Tour
+        location:
+          type: string
+          example: Lagos, Nigeria
+        price:
+          type: object
+          properties:
+            usd:
+              type: integer
+              example: 100
+            ngn:
+              type: integer
+              example: 45000
+            formatted:
+              type: string
+              example: "₦45,000"
+        features:
+          type: string
+        details:
+          type: string
+        image:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    PackagesResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Packages retrieved successfully
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Package'
+        pagination:
+          type: object
+          properties:
+            total:
+              type: integer
+            page:
+              type: integer
+            limit:
+              type: integer
+            totalPages:
+              type: integer
+
+    PackageResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Package retrieved successfully
+        data:
+          $ref: '#/components/schemas/Package'
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: Error message
+        errors:
+          type: object
+          additionalProperties:
+            type: string
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - BearerAuth: []

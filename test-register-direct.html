@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Direct Registration Test</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        button { padding: 10px 20px; margin: 5px; }
+        pre { background: #f4f4f4; padding: 15px; border-radius: 5px; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Direct Backend Registration Test</h1>
+    
+    <button onclick="testRegister()">Test Registration</button>
+    <button onclick="testLogin()">Test Login (admin@tms.com)</button>
+    
+    <h3>Result:</h3>
+    <pre id="result">Click a button to test...</pre>
+
+    <script>
+        const API_URL = 'http://localhost/Tourism-Management-System-main/backend/api/v2';
+
+        async function testRegister() {
+            const result = document.getElementById('result');
+            result.textContent = 'Testing registration...';
+            
+            try {
+                const timestamp = Date.now();
+                const testData = {
+                    full_name: 'Test User ' + timestamp,
+                    email: 'test' + timestamp + '@test.com',
+                    mobile: '08012345678',
+                    password: 'test123456'
+                };
+                
+                console.log('Sending:', testData);
+                
+                const response = await fetch(`${API_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testData)
+                });
+                
+                const data = await response.json();
+                
+                result.className = response.ok ? 'success' : 'error';
+                result.textContent = 
+                    'Status: ' + response.status + '\n' +
+                    'Response:\n' + 
+                    JSON.stringify(data, null, 2);
+                    
+            } catch (error) {
+                result.className = 'error';
+                result.textContent = 'ERROR: ' + error.message + '\n\n' + error.stack;
+            }
+        }
+
+        async function testLogin() {
+            const result = document.getElementById('result');
+            result.textContent = 'Testing login...';
+            
+            try {
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: 'admin@tms.com',
+                        password: 'Admin@123'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                result.className = response.ok ? 'success' : 'error';
+                result.textContent = 
+                    'Status: ' + response.status + '\n' +
+                    'Response:\n' + 
+                    JSON.stringify(data, null, 2);
+                    
+            } catch (error) {
+                result.className = 'error';
+                result.textContent = 'ERROR: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>

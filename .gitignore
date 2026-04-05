@@ -1,0 +1,38 @@
+# Environment files - NEVER commit these
+.env
+.env.local
+.env.production
+
+# Logs
+logs/*.log
+*.log
+
+# Vendor dependencies
+vendor/
+
+# Node modules
+node_modules/
+npm-debug.log*
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Cache files
+cache/
+tmp/
+
+# Upload directories
+uploads/
+images/uploads/
+
+# Backup files
+*.bak
+*.backup
+*.sql.backup

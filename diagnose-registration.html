@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Diagnostic</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #45a049; }
+        .result {
+            margin-top: 10px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .error { background: #ffebee; color: #c62828; }
+        .success { background: #e8f5e9; color: #2e7d32; }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .step {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f0f0f0;
+            border-left: 4px solid #2196F3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Registration Diagnostic Tool</h1>
+        <p>This will help us find out why registration is failing</p>
+
+        <!-- Step 1: Check Backend -->
+        <div class="step">
+            <h3>Step 1: Check Backend API</h3>
+            <button onclick="checkBackend()">Test Backend Connection</button>
+            <div id="backend-result"></div>
+        </div>
+
+        <!-- Step 2: Check Database -->
+        <div class="step">
+            <h3>Step 2: Check Database</h3>
+            <button onclick="checkDatabase()">Check Database Setup</button>
+            <div id="database-result"></div>
+        </div>
+
+        <!-- Step 3: Test Registration -->
+        <div class="step">
+            <h3>Step 3: Test Registration API</h3>
+            <input type="text" id="test-name" placeholder="Full Name" value="Test User">
+            <input type="email" id="test-email" placeholder="Email" value="testuser@example.com">
+            <input type="tel" id="test-mobile" placeholder="Mobile" value="08012345678">
+            <input type="password" id="test-password" placeholder="Password" value="test123">
+            <button onclick="testRegistration()">Test Registration</button>
+            <div id="registration-result"></div>
+        </div>
+
+        <!-- Step 4: Check CORS -->
+        <div class="step">
+            <h3>Step 4: Check CORS Headers</h3>
+            <button onclick="checkCORS()">Test CORS</button>
+            <div id="cors-result"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost/backend/api/v2';
+
+        function showResult(elementId, data, isError = false) {
+            const element = document.getElementById(elementId);
+            element.className = 'result ' + (isError ? 'error' : 'success');
+            element.textContent = JSON.stringify(data, null, 2);
+        }
+
+        async function checkBackend() {
+            try {
+                const response = await fetch(`${API_URL}/health`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    showResult('backend-result', {
+                        status: '✅ Backend is running',
+                        response: data
+                    });
+                } else {
+                    showResult('backend-result', {
+                        status: '❌ Backend returned error',
+                        response: data
+                    }, true);
+                }
+            } catch (error) {
+                showResult('backend-result', {
+                    status: '❌ Cannot connect to backend',
+                    error: error.message,
+                    note: 'Make sure Apache is running in XAMPP',
+                    url: API_URL
+                }, true);
+            }
+        }
+
+        async function checkDatabase() {
+            showResult('database-result', {
+                instructions: [
+                    '1. Open phpMyAdmin: http://localhost/phpmyadmin',
+                    '2. Check database "tms_system" exists',
+                    '3. Check "users" table exists',
+                    '4. Check "roles" table has 3 rows',
+                    '',
+                    'If missing, import: database/schema.sql'
+                ]
+            });
+        }
+
+        async function testRegistration() {
+            const full_name = document.getElementById('test-name').value;
+            const email = document.getElementById('test-email').value;
+            const mobile = document.getElementById('test-mobile').value;
+            const password = document.getElementById('test-password').value;
+
+            try {
+                console.log('Sending registration request...');
+                console.log('Data:', { full_name, email, mobile, password });
+
+                const response = await fetch(`${API_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ full_name, email, mobile, password })
+                });
+
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+
+                const text = await response.text();
+                console.log('Response text:', text);
+
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    showResult('registration-result', {
+                        status: '❌ Invalid JSON response',
+                        responseText: text,
+                        note: 'Backend might have PHP errors. Check Apache error logs.'
+                    }, true);
+                    return;
+                }
+
+                if (data.success) {
+                    showResult('registration-result', {
+                        status: '✅ Registration successful!',
+                        token: data.data.token ? data.data.token.substring(0, 50) + '...' : 'No token',
+                        user: data.data.user
+                    });
+                } else {
+                    showResult('registration-result', {
+                        status: '❌ Registration failed',
+                        message: data.message,
+                        errors: data.errors || 'No specific errors'
+                    }, true);
+                }
+            } catch (error) {
+                showResult('registration-result', {
+                    status: '❌ Request failed',
+                    error: error.message,
+                    stack: error.stack
+                }, true);
+            }
+        }
+
+        async function checkCORS() {
+            try {
+                const response = await fetch(`${API_URL}/health`, {
+                    method: 'OPTIONS'
+                });
+
+                const headers = {};
+                response.headers.forEach((value, key) => {
+                    headers[key] = value;
+                });
+
+                showResult('cors-result', {
+                    status: '✅ CORS check complete',
+                    headers: headers,
+                    note: 'Look for Access-Control-Allow-Origin header'
+                });
+            } catch (error) {
+                showResult('cors-result', {
+                    status: '❌ CORS check failed',
+                    error: error.message
+                }, true);
+            }
+        }
+
+        // Auto-run backend check
+        window.onload = () => {
+            checkBackend();
+        };
+    </script>
+</body>
+</html>

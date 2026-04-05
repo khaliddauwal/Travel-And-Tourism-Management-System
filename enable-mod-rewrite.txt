@@ -1,0 +1,76 @@
+========================================
+HOW TO ENABLE MOD_REWRITE IN XAMPP
+========================================
+
+STEP 1: Open httpd.conf
+------------------------
+1. Open XAMPP Control Panel
+2. Click "Config" button next to Apache
+3. Select "httpd.conf" from the menu
+4. File will open in Notepad
+
+STEP 2: Enable mod_rewrite
+---------------------------
+1. Press Ctrl+F to open Find
+2. Search for: LoadModule rewrite_module
+3. You'll find this line:
+   #LoadModule rewrite_module modules/mod_rewrite.so
+4. Remove the # at the beginning:
+   LoadModule rewrite_module modules/mod_rewrite.so
+5. Save (Ctrl+S)
+
+STEP 3: Allow .htaccess Override
+---------------------------------
+1. Press Ctrl+F to open Find
+2. Search for: AllowOverride None
+3. You'll find a section like:
+   <Directory "C:/xampp/htdocs">
+       AllowOverride None
+   </Directory>
+4. Change "None" to "All":
+   <Directory "C:/xampp/htdocs">
+       AllowOverride All
+   </Directory>
+5. Save (Ctrl+S)
+
+STEP 4: Restart Apache
+-----------------------
+1. Go back to XAMPP Control Panel
+2. Click "Stop" next to Apache
+3. Wait 2 seconds
+4. Click "Start" next to Apache
+5. Wait for green light
+
+STEP 5: Test
+------------
+Open in browser:
+http://localhost/backend/api/v2/health
+
+Should see JSON response (not 404)!
+
+========================================
+TROUBLESHOOTING
+========================================
+
+If Apache won't start after changes:
+1. You may have a typo in httpd.conf
+2. Click "Logs" next to Apache
+3. Check error.log for details
+4. Undo your changes and try again
+
+If still getting 404:
+1. Make sure you saved httpd.conf
+2. Make sure you restarted Apache
+3. Try accessing: http://localhost/backend/api/v2/test.php
+4. If test.php works but /health doesn't, recheck the steps
+
+========================================
+NEED HELP?
+========================================
+
+Share:
+1. Screenshot of XAMPP Control Panel
+2. Last 10 lines of Apache error.log
+3. What you see at: http://localhost/backend/api/v2/test.php
+
+========================================

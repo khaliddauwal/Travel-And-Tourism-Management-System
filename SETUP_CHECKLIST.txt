@@ -1,0 +1,78 @@
+========================================
+SETUP CHECKLIST - Follow These Steps
+========================================
+
+STEP 1: CHECK XAMPP
+[ ] Apache is running (green light)
+[ ] MySQL is running (green light)
+
+STEP 2: IMPORT DATABASE
+[ ] Open http://localhost/phpmyadmin
+[ ] Click "Import" tab
+[ ] Choose file: database/schema.sql
+[ ] Click "Go" button
+[ ] See success message
+[ ] Database "tms_system" appears in left sidebar
+
+STEP 3: TEST BACKEND
+[ ] Open: http://localhost/backend/api/v2/health
+[ ] See: {"success":true,"message":"API is running"}
+OR
+[ ] Double-click: test-backend.bat
+[ ] All tests show green checkmarks
+
+STEP 4: START FRONTEND
+[ ] Open terminal/command prompt
+[ ] cd frontend/tourism-react
+[ ] npm start
+[ ] Browser opens at http://localhost:3000
+
+STEP 5: TEST REGISTRATION
+[ ] Go to: http://localhost:3000/register
+[ ] Fill in form with your details
+[ ] Click "Register"
+[ ] Automatically logged in
+[ ] Redirected to dashboard
+
+STEP 6: TEST LOGIN
+[ ] Click logout
+[ ] Go to login page
+[ ] Enter your email and password
+[ ] Click "Login"
+[ ] Successfully logged in!
+
+========================================
+DEMO ACCOUNTS (for testing)
+========================================
+Tourist: tourist@tms.com / Tourist@123
+Agent:   agent@tms.com / Agent@123
+Admin:   admin@tms.com / Admin@123
+
+========================================
+TROUBLESHOOTING
+========================================
+Problem: Backend not accessible
+Fix: Restart Apache and MySQL in XAMPP
+
+Problem: Database error
+Fix: Import database/schema.sql again
+
+Problem: Still can't login
+Fix: Clear browser cache (F12 > Application > Clear storage)
+
+========================================
+NEED HELP?
+========================================
+Read: START_HERE.md
+Or: SOLUTION_SUMMARY.md
+Or: FRONTEND_BACKEND_CONNECTION_FIX.md
+
+========================================
+STATUS
+========================================
+Backend: COMPLETE ✓
+Frontend: CONNECTED ✓
+Database: READY ✓
+Documentation: COMPLETE ✓
+
+You're all set! 🎉
