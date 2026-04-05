@@ -14,6 +14,9 @@ vendor/
 node_modules/
 npm-debug.log*
 
+# React production build (regenerate with npm run build)
+frontend/tourism-react/build/
+
 # IDE files
 .vscode/
 .idea/
