@@ -3,7 +3,24 @@ error_reporting(E_ALL);
 ini_set("display_errors", 0);
 
 header("Content-Type: application/json");
-header("Access-Control-Allow-Origin: http://localhost:3000");
+
+// Allow requests from any Vercel/Netlify frontend OR localhost for dev
+$allowedOrigins = [
+    "http://localhost:3000",
+    "http://localhost:5173",
+];
+// Also allow any .vercel.app or .netlify.app subdomain
+$origin = $_SERVER["HTTP_ORIGIN"] ?? "";
+if (
+    in_array($origin, $allowedOrigins) ||
+    preg_match('/^https:\/\/[a-z0-9\-]+\.vercel\.app$/', $origin) ||
+    preg_match('/^https:\/\/[a-z0-9\-]+\.netlify\.app$/', $origin) ||
+    (isset($_ENV["FRONTEND_URL"]) && $origin === $_ENV["FRONTEND_URL"])
+) {
+    header("Access-Control-Allow-Origin: $origin");
+} else {
+    header("Access-Control-Allow-Origin: *");
+}
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Access-Control-Allow-Credentials: true");
@@ -22,10 +39,9 @@ require_once __DIR__ . "/utils/Response.php";
 
 $method   = $_SERVER["REQUEST_METHOD"];
 $path     = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
-$path     = str_replace("/Tourism-Management-System-main/backend/api/v2", "", $path);
-$path     = str_replace("/TTMS-DUAL-ROLES/backend/api/v2", "", $path);
-$path     = str_replace("/backend/api/v2", "", $path);
-$path     = trim($path, "/");
+// Strip everything up to and including /api/v2 regardless of server folder structure
+$path = preg_replace('#^.*/api/v2#', '', $path);
+$path = trim($path, "/");
 $segments = explode("/", $path);
 
 try {
