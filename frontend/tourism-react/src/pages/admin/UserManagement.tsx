@@ -25,6 +25,7 @@ const UserManagement: React.FC = () => {
 
   const { showToast } = useToast();
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const loadUsers = useCallback(async () => {
     setLoading(true);
     try {
@@ -55,7 +56,6 @@ const UserManagement: React.FC = () => {
     statusFilter,
     roleFilter,
     showToast,
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   ]);
 
   useEffect(() => {
