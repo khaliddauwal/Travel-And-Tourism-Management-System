@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAuth } from "../../../context/AuthContext";
 import { useToast } from "../../../components/Toast";
 import { apiService } from "../../../services/api";
 import LoadingSpinner from "../../../components/LoadingSpinner";
@@ -28,7 +27,6 @@ const BookingForm: React.FC<BookingFormProps> = ({
 }) => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user } = useAuth();
   const { showToast } = useToast();
 
   const [formData, setFormData] = useState<BookingFormData>({
@@ -101,12 +99,6 @@ const BookingForm: React.FC<BookingFormProps> = ({
 
   const calculateTotal = () => {
     return currentPackagePrice * formData.participants;
-  };
-
-  const generateBookingReference = () => {
-    const timestamp = Date.now().toString(36);
-    const random = Math.random().toString(36).substr(2, 5);
-    return `TMS-${timestamp}-${random}`.toUpperCase();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

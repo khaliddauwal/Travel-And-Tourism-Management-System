@@ -30,63 +30,66 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState<string>("all");
 
-  // Mock notifications data
-  const mockNotifications: Notification[] = [
-    {
-      id: 1,
-      userId: 1,
-      title: "Booking Confirmed",
-      message:
-        "Your booking for Lagos City Explorer has been confirmed. Reference: TMS-ABC123",
-      type: "booking",
-      status: "unread",
-      actionUrl: "/dashboard",
-      createdAt: "2024-01-20T10:30:00Z",
-    },
-    {
-      id: 2,
-      userId: 1,
-      title: "Payment Successful",
-      message:
-        "Payment of ₦50,000 has been processed successfully for your booking.",
-      type: "payment",
-      status: "unread",
-      actionUrl: "/payment-history",
-      createdAt: "2024-01-20T09:15:00Z",
-    },
-    {
-      id: 3,
-      userId: 1,
-      title: "Visa Application Update",
-      message:
-        "Your visa application for United States has been approved. Please check your email for details.",
-      type: "visa",
-      status: "read",
-      actionUrl: "/visa-status",
-      createdAt: "2024-01-19T14:20:00Z",
-    },
-    {
-      id: 4,
-      userId: 1,
-      title: "Special Offer: 20% Off",
-      message:
-        "Limited time offer! Get 20% off on all Northern Nigeria packages. Use code NORTH20.",
-      type: "promotion",
-      status: "read",
-      actionUrl: "/packages",
-      createdAt: "2024-01-18T11:45:00Z",
-    },
-    {
-      id: 5,
-      userId: 1,
-      title: "System Maintenance",
-      message:
-        "Scheduled maintenance on Jan 25, 2024 from 2:00 AM to 4:00 AM. Services may be temporarily unavailable.",
-      type: "system",
-      status: "read",
-      createdAt: "2024-01-17T16:30:00Z",
-    },
-  ];
+  // Mock notifications data - defined outside useCallback to avoid dependency issues
+  const mockNotifications: Notification[] = React.useMemo(
+    () => [
+      {
+        id: 1,
+        userId: 1,
+        title: "Booking Confirmed",
+        message:
+          "Your booking for Lagos City Explorer has been confirmed. Reference: TMS-ABC123",
+        type: "booking",
+        status: "unread",
+        actionUrl: "/dashboard",
+        createdAt: "2024-01-20T10:30:00Z",
+      },
+      {
+        id: 2,
+        userId: 1,
+        title: "Payment Successful",
+        message:
+          "Payment of ₦50,000 has been processed successfully for your booking.",
+        type: "payment",
+        status: "unread",
+        actionUrl: "/payment-history",
+        createdAt: "2024-01-20T09:15:00Z",
+      },
+      {
+        id: 3,
+        userId: 1,
+        title: "Visa Application Update",
+        message:
+          "Your visa application for United States has been approved. Please check your email for details.",
+        type: "visa",
+        status: "read",
+        actionUrl: "/visa-status",
+        createdAt: "2024-01-19T14:20:00Z",
+      },
+      {
+        id: 4,
+        userId: 1,
+        title: "Special Offer: 20% Off",
+        message:
+          "Limited time offer! Get 20% off on all Northern Nigeria packages. Use code NORTH20.",
+        type: "promotion",
+        status: "read",
+        actionUrl: "/packages",
+        createdAt: "2024-01-18T11:45:00Z",
+      },
+      {
+        id: 5,
+        userId: 1,
+        title: "System Maintenance",
+        message:
+          "Scheduled maintenance on Jan 25, 2024 from 2:00 AM to 4:00 AM. Services may be temporarily unavailable.",
+        type: "system",
+        status: "read",
+        createdAt: "2024-01-17T16:30:00Z",
+      },
+    ],
+    [],
+  );
 
   const loadNotifications = useCallback(async () => {
     setLoading(true);
@@ -113,7 +116,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({
     } finally {
       setLoading(false);
     }
-  }, [filter, showToast]);
+  }, [filter, showToast, mockNotifications]);
 
   useEffect(() => {
     if (isOpen && user) {

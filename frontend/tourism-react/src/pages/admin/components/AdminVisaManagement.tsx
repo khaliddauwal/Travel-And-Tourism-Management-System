@@ -8,10 +8,7 @@ import {
 } from "../../../types/visa";
 import { useToast } from "../../../components/Toast";
 import LoadingSpinner from "../../../components/LoadingSpinner";
-import {
-  formatDateToDisplay,
-  formatDateTimeToDisplay,
-} from "../../../utils/dateUtils";
+import { formatDateTimeToDisplay } from "../../../utils/dateUtils";
 
 const AdminVisaManagement: React.FC = () => {
   const [visaRequests, setVisaRequests] = useState<VisaRequest[]>([]);

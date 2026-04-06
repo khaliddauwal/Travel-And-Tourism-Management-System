@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useToast } from "../../components/Toast";
 import { apiService, Package } from "../../services/api";
@@ -20,7 +20,7 @@ interface PackageFormData {
 }
 
 const PackageManagement: React.FC = () => {
-  const { user, hasPermission } = useAuth();
+  const { hasPermission } = useAuth();
   const { showToast } = useToast();
 
   const [packages, setPackages] = useState<Package[]>([]);
@@ -59,11 +59,7 @@ const PackageManagement: React.FC = () => {
     "Hajj",
   ];
 
-  useEffect(() => {
-    loadPackages();
-  }, [filter]);
-
-  const loadPackages = async () => {
+  const loadPackages = useCallback(async () => {
     try {
       setLoading(true);
       // Admin sees all statuses; pass status=all to bypass the default 'published' filter
@@ -87,7 +83,11 @@ const PackageManagement: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filter, showToast]);
+
+  useEffect(() => {
+    loadPackages();
+  }, [filter, loadPackages]);
 
   const handleInputChange = (
     e: React.ChangeEvent<

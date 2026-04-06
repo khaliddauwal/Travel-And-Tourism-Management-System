@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
 import { useToast } from "../../components/Toast";
 import { apiService } from "../../services/api";
 import LoadingSpinner from "../../components/LoadingSpinner";
@@ -18,7 +17,6 @@ interface Booking {
 }
 
 const TouristBookings: React.FC = () => {
-  const { user } = useAuth();
   const { showToast } = useToast();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);

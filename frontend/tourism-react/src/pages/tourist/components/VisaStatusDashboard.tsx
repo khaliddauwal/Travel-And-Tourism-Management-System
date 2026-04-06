@@ -9,10 +9,7 @@ import {
 } from "../../../types/visa";
 import { useToast } from "../../../components/Toast";
 import LoadingSpinner from "../../../components/LoadingSpinner";
-import {
-  formatDateToDisplay,
-  formatDateTimeToDisplay,
-} from "../../../utils/dateUtils";
+import { formatDateToDisplay } from "../../../utils/dateUtils";
 
 const VisaStatusDashboard: React.FC = () => {
   const [visaRequests, setVisaRequests] = useState<VisaRequest[]>([]);

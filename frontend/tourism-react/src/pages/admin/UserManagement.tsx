@@ -55,6 +55,7 @@ const UserManagement: React.FC = () => {
     statusFilter,
     roleFilter,
     showToast,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   ]);
 
   useEffect(() => {

@@ -48,50 +48,53 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Mock reviews data
-  const mockReviews: Review[] = [
-    {
-      id: 1,
-      userId: 1,
-      packageId: 1,
-      bookingId: 1,
-      userFullName: "Sarah Johnson",
-      packageTitle: "Lagos City Explorer",
-      rating: 5,
-      comment:
-        "Amazing experience! The tour guide was knowledgeable and the locations were breathtaking. Highly recommended for anyone visiting Lagos.",
-      status: "approved",
-      createdAt: "2024-01-20T10:30:00Z",
-      updatedAt: "2024-01-20T10:30:00Z",
-    },
-    {
-      id: 2,
-      userId: 2,
-      packageId: 1,
-      bookingId: 2,
-      userFullName: "Michael Chen",
-      packageTitle: "Lagos City Explorer",
-      rating: 4,
-      comment:
-        "Great tour overall. The Victoria Island visit was fantastic. Only minor issue was the timing - we felt a bit rushed at some locations.",
-      status: "approved",
-      createdAt: "2024-01-18T14:20:00Z",
-      updatedAt: "2024-01-18T14:20:00Z",
-    },
-    {
-      id: 3,
-      userId: 3,
-      packageId: 1,
-      bookingId: 3,
-      userFullName: "Amina Abdullahi",
-      packageTitle: "Lagos City Explorer",
-      rating: 5,
-      comment:
-        "Excellent service from start to finish. The team was professional and accommodating. The cultural sites were well-chosen and informative.",
-      status: "approved",
-      createdAt: "2024-01-15T09:15:00Z",
-      updatedAt: "2024-01-15T09:15:00Z",
-    },
-  ];
+  const mockReviews: Review[] = React.useMemo(
+    () => [
+      {
+        id: 1,
+        userId: 1,
+        packageId: 1,
+        bookingId: 1,
+        userFullName: "Sarah Johnson",
+        packageTitle: "Lagos City Explorer",
+        rating: 5,
+        comment:
+          "Amazing experience! The tour guide was knowledgeable and the locations were breathtaking. Highly recommended for anyone visiting Lagos.",
+        status: "approved",
+        createdAt: "2024-01-20T10:30:00Z",
+        updatedAt: "2024-01-20T10:30:00Z",
+      },
+      {
+        id: 2,
+        userId: 2,
+        packageId: 1,
+        bookingId: 2,
+        userFullName: "Michael Chen",
+        packageTitle: "Lagos City Explorer",
+        rating: 4,
+        comment:
+          "Great tour overall. The Victoria Island visit was fantastic. Only minor issue was the timing - we felt a bit rushed at some locations.",
+        status: "approved",
+        createdAt: "2024-01-18T14:20:00Z",
+        updatedAt: "2024-01-18T14:20:00Z",
+      },
+      {
+        id: 3,
+        userId: 3,
+        packageId: 1,
+        bookingId: 3,
+        userFullName: "Amina Abdullahi",
+        packageTitle: "Lagos City Explorer",
+        rating: 5,
+        comment:
+          "Excellent service from start to finish. The team was professional and accommodating. The cultural sites were well-chosen and informative.",
+        status: "approved",
+        createdAt: "2024-01-15T09:15:00Z",
+        updatedAt: "2024-01-15T09:15:00Z",
+      },
+    ],
+    [],
+  );
 
   const loadReviews = useCallback(async () => {
     setLoading(true);
@@ -108,7 +111,7 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
     } finally {
       setLoading(false);
     }
-  }, [packageId, showToast]);
+  }, [packageId, showToast, mockReviews]);
 
   useEffect(() => {
     if (showReviews) {
@@ -159,15 +162,6 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
     setSubmitting(true);
 
     try {
-      const reviewData = {
-        packageId: packageId || 1,
-        bookingId: bookingId || 1,
-        rating: formData.rating,
-        comment: formData.comment.trim(),
-        userId: user?.email,
-        userFullName: user?.fullName,
-      };
-
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
@@ -214,14 +208,6 @@ const ReviewSystem: React.FC<ReviewSystemProps> = ({
     if (reviews.length === 0) return "0";
     const sum = reviews.reduce((acc, review) => acc + review.rating, 0);
     return (sum / reviews.length).toFixed(1);
-  };
-
-  const getRatingDistribution = () => {
-    const distribution = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
-    reviews.forEach((review) => {
-      distribution[review.rating as keyof typeof distribution]++;
-    });
-    return distribution;
   };
 
   return (
