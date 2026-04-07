@@ -10314,3 +10314,45 @@ textarea,
   margin-bottom: 1.5rem;
   line-height: 1.6;
 }
+
+/* ===================================================
+   FIX: Blurry hero title on mobile
+   Cause 1: -webkit-background-clip:text renders blurry on mobile GPUs
+   Cause 2: backdrop-filter:blur on hero overlay blurs child text
+   Cause 3: text-shadow + gradient text conflict
+   =================================================== */
+
+@media (max-width: 768px) {
+  /* Drop gradient text clip — use solid white instead */
+  .hero-text h1,
+  .hero-title,
+  .adventure-title {
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    -webkit-text-fill-color: #ffffff !important;
+    background-clip: unset !important;
+    color: #ffffff !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6) !important;
+    /* Force GPU layer for crisp rendering */
+    transform: translateZ(0);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Remove backdrop-filter from hero overlay — it blurs text on mobile */
+  .hero-section::before,
+  .hero-overlay,
+  .adventure-hero .hero-overlay,
+  .management-hero .hero-overlay {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* Remove backdrop-filter from hero stat cards too */
+  .hero-stat-card,
+  .stat-item,
+  .search-container {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(0, 0, 0, 0.35) !important;
+  }
+}
