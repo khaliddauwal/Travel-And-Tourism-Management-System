@@ -49,9 +49,13 @@ class AuthController {
             Response::error("Email already registered", 409);
         }
 
-        // All new registrations are tourists (role_id = 2)
-        $roleId = 2; // Tourist role
-        $status = 'active'; // Active by default
+        // Get tourist role ID dynamically
+        $roleQuery = "SELECT id FROM roles WHERE name = 'tourist' LIMIT 1";
+        $roleStmt = $this->conn->prepare($roleQuery);
+        $roleStmt->execute();
+        $roleRow = $roleStmt->fetch();
+        $roleId = $roleRow ? $roleRow['id'] : 2; // fallback to 2
+        $status = 'active';
 
         // Hash password
         $hashedPassword = password_hash($data['password'], PASSWORD_BCRYPT);
@@ -71,15 +75,15 @@ class AuthController {
         if ($stmt->execute()) {
             $userId = $this->conn->lastInsertId();
 
+            // Get user data with role name
+            $user = $this->getUserById($userId);
+
             // Generate JWT token
             $token = JWT::encode([
                 'user_id' => $userId,
                 'email' => $validData['email'],
-                'role' => 'tourist'
+                'role' => $user['role_name'] ?? 'tourist'
             ]);
-
-            // Get user data
-            $user = $this->getUserById($userId);
 
             Response::success([
                 'token' => $token,
@@ -285,17 +289,22 @@ class AuthController {
     }
 
     /**
-     * Log user activity
+     * Log user activity (silently fails if table doesn't exist)
      */
     private function logActivity($userId, $action) {
-        $query = "INSERT INTO activity_logs (user_id, action, ip_address, user_agent) 
-                  VALUES (:user_id, :action, :ip, :user_agent)";
-        
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':user_id', $userId);
-        $stmt->bindParam(':action', $action);
-        $stmt->bindValue(':ip', $_SERVER['REMOTE_ADDR'] ?? null);
-        $stmt->bindValue(':user_agent', $_SERVER['HTTP_USER_AGENT'] ?? null);
-        $stmt->execute();
+        try {
+            $query = "INSERT INTO activity_logs (user_id, action, ip_address, user_agent) 
+                      VALUES (:user_id, :action, :ip, :user_agent)";
+            
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':user_id', $userId);
+            $stmt->bindParam(':action', $action);
+            $stmt->bindValue(':ip', $_SERVER['REMOTE_ADDR'] ?? null);
+            $stmt->bindValue(':user_agent', $_SERVER['HTTP_USER_AGENT'] ?? null);
+            $stmt->execute();
+        } catch (Exception $e) {
+            // Non-critical — don't let logging failure break login
+            error_log("logActivity failed: " . $e->getMessage());
+        }
     }
 }

@@ -225,6 +225,11 @@ class ApiService {
         return response.data.data;
     }
 
+    async getRecentReviews(limit: number = 6): Promise<any[]> {
+        const response = await api.get<ApiResponse<any[]>>('/reviews/recent', { params: { limit } });
+        return response.data.data ?? [];
+    }
+
     // Contact
     async sendContactMessage(data: {
         name: string;

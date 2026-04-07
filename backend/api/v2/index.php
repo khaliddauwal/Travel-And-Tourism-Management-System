@@ -9,12 +9,14 @@ $allowedOrigins = [
     "http://localhost:3000",
     "http://localhost:5173",
 ];
-// Also allow any .vercel.app or .netlify.app subdomain
+// Also allow any .vercel.app or .netlify.app subdomain, or the custom domain
 $origin = $_SERVER["HTTP_ORIGIN"] ?? "";
 if (
     in_array($origin, $allowedOrigins) ||
     preg_match('/^https:\/\/[a-z0-9\-]+\.vercel\.app$/', $origin) ||
     preg_match('/^https:\/\/[a-z0-9\-]+\.netlify\.app$/', $origin) ||
+    preg_match('/^https:\/\/[a-z0-9\-]+\.kesug\.com$/', $origin) ||
+    preg_match('/^https:\/\/[a-z0-9\-]+\.infinityfree\.com$/', $origin) ||
     (isset($_ENV["FRONTEND_URL"]) && $origin === $_ENV["FRONTEND_URL"])
 ) {
     header("Access-Control-Allow-Origin: $origin");
@@ -27,11 +29,23 @@ header("Access-Control-Allow-Credentials: true");
 
 if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") { http_response_code(200); exit; }
 
-if (file_exists(__DIR__ . "/../../.env")) {
-    foreach (file(__DIR__ . "/../../.env", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
-        if (strpos(trim($line), "#") === 0 || strpos($line, "=") === false) continue;
-        list($k, $v) = explode("=", $line, 2);
-        $_ENV[trim($k)] = trim($v);
+// Load .env — try backend/.env first, then root .env as fallback
+$envPaths = [
+    __DIR__ . "/../../.env",   // backend/.env
+    __DIR__ . "/../../../.env" // root .env
+];
+foreach ($envPaths as $envFile) {
+    if (file_exists($envFile)) {
+        foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+            if (strpos(trim($line), "#") === 0 || strpos($line, "=") === false) continue;
+            list($k, $v) = explode("=", $line, 2);
+            $key = trim($k);
+            // Don't overwrite already-set values
+            if (!isset($_ENV[$key])) {
+                $_ENV[$key] = trim($v);
+            }
+        }
+        break; // Stop after first found
     }
 }
 
@@ -156,6 +170,8 @@ try {
             if (!$id) {
                 if ($method==="GET")  $c->index();
                 if ($method==="POST") $c->create();
+            } elseif ($id==="recent") {
+                if ($method==="GET") $c->recent();
             } elseif ($action==="status") {
                 if ($method==="PUT") $c->updateStatus($id);
             } else {

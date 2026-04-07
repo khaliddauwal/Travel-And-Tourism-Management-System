@@ -19,6 +19,32 @@ class ReviewController {
     }
 
     /**
+     * Get recent approved reviews (public, no auth required)
+     * Used on the public homepage
+     */
+    public function recent() {
+        $limit = min((int)($_GET['limit'] ?? 6), 20);
+
+        $query = "SELECT r.rating, r.comment, r.created_at,
+                         u.full_name as user_name
+                  FROM reviews r
+                  JOIN users u ON r.user_id = u.id
+                  WHERE r.status = 'approved'
+                    AND r.comment IS NOT NULL
+                    AND r.comment != ''
+                  ORDER BY r.created_at DESC
+                  LIMIT :limit";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':limit', $limit, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        $reviews = $stmt->fetchAll();
+
+        Response::success($reviews, "Recent reviews retrieved");
+    }
+
+    /**
      * Get reviews for a package
      */
     public function index() {

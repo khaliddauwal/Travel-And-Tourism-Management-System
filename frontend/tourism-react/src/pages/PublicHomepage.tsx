@@ -3,17 +3,23 @@ import { Link } from "react-router-dom";
 import { apiService, Package } from "../services/api";
 import LoadingSpinner from "../components/LoadingSpinner";
 
-/**
- * PublicHomepage - PURE MARKETING PAGE
- * Loads featured packages from database
- */
+interface Review {
+  rating: number;
+  comment: string;
+  user_name: string;
+  created_at: string;
+}
+
 const PublicHomepage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [featuredPackages, setFeaturedPackages] = useState<Package[]>([]);
   const [loading, setLoading] = useState(true);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [reviewsLoading, setReviewsLoading] = useState(true);
 
   useEffect(() => {
     loadFeaturedPackages();
+    loadReviews();
   }, []);
 
   const loadFeaturedPackages = async () => {
@@ -28,35 +34,17 @@ const PublicHomepage: React.FC = () => {
     }
   };
 
-  const testimonials = [
-    {
-      id: 1,
-      name: "Sarah Johnson",
-      location: "New York, USA",
-      rating: 5,
-      comment:
-        "Amazing experience! The booking process was smooth and the tour exceeded all expectations. Highly recommended!",
-      image: "https://i.pravatar.cc/150?img=1",
-    },
-    {
-      id: 2,
-      name: "Michael Chen",
-      location: "Singapore",
-      rating: 5,
-      comment:
-        "Professional service from start to finish. The guides were knowledgeable and the destinations were breathtaking.",
-      image: "https://i.pravatar.cc/150?img=2",
-    },
-    {
-      id: 3,
-      name: "Emma Williams",
-      location: "London, UK",
-      rating: 4,
-      comment:
-        "Great value for money. The platform made it easy to plan our entire trip. Will definitely use again!",
-      image: "https://i.pravatar.cc/150?img=3",
-    },
-  ];
+  const loadReviews = async () => {
+    try {
+      setReviewsLoading(true);
+      const data = await apiService.getRecentReviews(6);
+      setReviews(data);
+    } catch (error) {
+      console.error("Failed to load reviews:", error);
+    } finally {
+      setReviewsLoading(false);
+    }
+  };
 
   const features = [
     {
@@ -206,7 +194,7 @@ const PublicHomepage: React.FC = () => {
         </div>
       </section>
 
-      {/* Testimonials */}
+      {/* Traveler Reviews */}
       <section className="testimonials-section">
         <div className="container">
           <div className="section-header">
@@ -214,27 +202,41 @@ const PublicHomepage: React.FC = () => {
             <p>Real experiences from real travelers</p>
           </div>
 
-          <div className="testimonials-grid">
-            {testimonials.map((testimonial) => (
-              <div key={testimonial.id} className="testimonial-card">
-                <div className="testimonial-rating">
-                  {"⭐".repeat(testimonial.rating)}
-                </div>
-                <p className="testimonial-comment">"{testimonial.comment}"</p>
-                <div className="testimonial-author">
-                  <img
-                    src={testimonial.image}
-                    alt={testimonial.name}
-                    className="author-image"
-                  />
-                  <div className="author-info">
-                    <strong>{testimonial.name}</strong>
-                    <span>{testimonial.location}</span>
+          {reviewsLoading ? (
+            <LoadingSpinner text="Loading reviews..." />
+          ) : reviews.length > 0 ? (
+            <div className="testimonials-grid">
+              {reviews.map((review, index) => (
+                <div key={index} className="testimonial-card">
+                  <div className="testimonial-rating">
+                    {"⭐".repeat(Math.min(review.rating, 5))}
+                  </div>
+                  <p className="testimonial-comment">"{review.comment}"</p>
+                  <div className="testimonial-author">
+                    <div className="author-avatar">
+                      {review.user_name.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="author-info">
+                      <strong>{review.user_name}</strong>
+                      <span>Verified Traveler</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="reviews-empty-state">
+              <div className="reviews-empty-icon">✈️</div>
+              <h3>Be the first to share your experience!</h3>
+              <p>
+                Book a package, complete your trip, and leave a review to help
+                other travelers.
+              </p>
+              <Link to="/packages" className="btn btn-primary">
+                Browse Packages
+              </Link>
+            </div>
+          )}
         </div>
       </section>
 

@@ -9,7 +9,6 @@ interface NavigationItem {
   path: string;
   label: string;
   show: boolean;
-  highlight?: boolean;
 }
 
 const Header: React.FC = () => {
@@ -25,142 +24,103 @@ const Header: React.FC = () => {
     setIsMobileMenuOpen(false);
   };
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
-  };
+  const closeMobileMenu = () => setIsMobileMenuOpen(false);
+  const toggleMobileMenu = () => setIsMobileMenuOpen((v) => !v);
 
   const getNavigationItems = (): NavigationItem[] => {
-    const items: NavigationItem[] = [];
-
-    // Visitors only - show Home link to marketing page
     if (!user) {
-      items.push({ path: "/", label: "Home", show: true });
+      return [
+        { path: "/", label: "Home", show: true },
+        { path: "/packages", label: "Packages", show: true },
+        { path: "/about", label: "About", show: true },
+        { path: "/contact", label: "Contact", show: true },
+      ];
     }
-
-    // Role-specific navigation for logged-in users
-    if (user) {
-      if (user.role === "admin") {
-        // Admin navigation
-        items.push({
-          path: "/admin/dashboard",
-          label: "Dashboard",
-          show: true,
-        });
-        items.push({
-          path: "/admin/users",
-          label: "User Management",
-          show: true,
-        });
-        items.push({
-          path: "/admin/packages",
-          label: "Package Management",
-          show: true,
-        });
-        items.push({
-          path: "/admin/bookings",
-          label: "Booking Management",
-          show: true,
-        });
-        items.push({
-          path: "/admin/visa",
-          label: "Visa Management",
-          show: true,
-        });
-      } else if (user.role === "tourist") {
-        // Tourist navigation
-        items.push({
-          path: "/tourist/dashboard",
-          label: "Dashboard",
-          show: true,
-        });
-        items.push({
-          path: "/tourist/bookings",
-          label: "My Bookings",
-          show: true,
-        });
-        items.push({
-          path: "/packages",
-          label: "Packages",
-          show: true,
-        });
-        items.push({
-          path: "/visa-request",
-          label: "Visa Assistance",
-          show: true,
-        });
-        items.push({
-          path: "/ai-recommendations",
-          label: "AI Assistant",
-          show: true,
-        });
-      }
-    } else {
-      // Visitor navigation
-      items.push({
-        path: "/packages",
-        label: "Packages",
-        show: true,
-      });
-      items.push({
-        path: "/about",
-        label: "About",
-        show: true,
-      });
-      items.push({
-        path: "/contact",
-        label: "Contact",
-        show: true,
-      });
-    }
-
-    return items.filter((item) => item.show);
-  };
-
-  const getUserMenuItems = () => {
-    if (!user) return [];
-
-    const items = [];
-
-    // Common user actions in dropdown
-    if (user.role === "tourist") {
-      items.push({
-        path: "/visa-status",
-        label: "Visa Status",
-        show: true,
-      });
-      items.push({
-        path: "/payment",
-        label: "Payment History",
-        show: true,
-      });
-    }
-
     if (user.role === "admin") {
-      items.push({
-        path: "/admin/settings",
-        label: "Settings",
-        show: true,
-      });
-      items.push({
-        path: "/admin/reports",
-        label: "Reports",
-        show: true,
-      });
+      return [
+        { path: "/admin/dashboard", label: "Dashboard", show: true },
+        { path: "/admin/users", label: "User Management", show: true },
+        { path: "/admin/packages", label: "Package Management", show: true },
+        { path: "/admin/bookings", label: "Booking Management", show: true },
+        { path: "/admin/visa", label: "Visa Management", show: true },
+        { path: "/admin/settings", label: "Settings", show: true },
+        { path: "/admin/reports", label: "Reports", show: true },
+      ];
     }
-
-    return items.filter((item) => item.show);
+    // tourist
+    return [
+      { path: "/tourist/dashboard", label: "Dashboard", show: true },
+      { path: "/tourist/bookings", label: "My Bookings", show: true },
+      { path: "/packages", label: "Packages", show: true },
+      { path: "/visa-request", label: "Visa Assistance", show: true },
+      { path: "/visa-status", label: "Visa Status", show: true },
+      { path: "/payment", label: "Payment History", show: true },
+    ];
   };
 
-  const navigationItems = getNavigationItems();
-  const userMenuItems = getUserMenuItems();
+  const navItems = getNavigationItems().filter((i) => i.show);
+
+  /* ── inline style tokens ── */
+  const drawerStyle: React.CSSProperties = {
+    position: "fixed",
+    top: 0,
+    right: isMobileMenuOpen ? 0 : "-100%",
+    width: "min(300px, 88vw)",
+    height: "100vh",
+    background: "var(--bg-primary, #0f172a)",
+    borderLeft: "1px solid var(--border-color, #30363d)",
+    boxShadow: "-4px 0 24px rgba(0,0,0,0.4)",
+    zIndex: 99999,
+    overflowY: "auto",
+    transition: "right 0.3s ease",
+    display: "flex",
+    flexDirection: "column",
+    padding: "1rem 0",
+  };
+
+  const overlayStyle: React.CSSProperties = {
+    display: isMobileMenuOpen ? "block" : "none",
+    position: "fixed",
+    inset: 0,
+    background: "rgba(0,0,0,0.55)",
+    zIndex: 99998,
+    cursor: "pointer",
+  };
+
+  const navLinkStyle: React.CSSProperties = {
+    display: "block",
+    padding: "0.875rem 1.5rem",
+    color: "var(--text-primary, #f1f5f9)",
+    textDecoration: "none",
+    fontSize: "0.9375rem",
+    fontWeight: 600,
+    borderBottom: "1px solid var(--border-light, #21262d)",
+    cursor: "pointer",
+    minHeight: "48px",
+    lineHeight: "1.4",
+    boxSizing: "border-box",
+  };
+
+  const closeBtnStyle: React.CSSProperties = {
+    alignSelf: "flex-end",
+    margin: "0 1rem 0.5rem",
+    background: "var(--bg-tertiary, #334155)",
+    border: "1px solid var(--border-color, #30363d)",
+    borderRadius: "8px",
+    color: "var(--text-primary, #f1f5f9)",
+    width: "40px",
+    height: "40px",
+    fontSize: "1.25rem",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  };
 
   return (
     <>
-      {/* Top Header */}
+      {/* Top bar — hidden on mobile via CSS */}
       <div className="top-header">
         <div className="container">
           <div
@@ -170,19 +130,14 @@ const Header: React.FC = () => {
               fontSize: "0.875rem",
             }}
           >
-            <div className="top-header-left">
-              <span>📞 Support: +1-800-TRAVEL</span>
-            </div>
-            <div className="top-header-right">
-              <span>
-                ✉️ support@travelmanagement.com | 🌍 Travel & Tourism Management
-                System
-              </span>
+            <span>📞 Support: +1-800-TRAVEL</span>
+            <div
+              className="top-header-right"
+              style={{ display: "flex", alignItems: "center", gap: "1rem" }}
+            >
+              <span>✉️ support@travelmanagement.com</span>
               {user && (
-                <span
-                  className="user-role-indicator"
-                  style={{ marginLeft: "1rem" }}
-                >
+                <span style={{ fontWeight: 600 }}>
                   {ROLE_ICONS[user.role]} {ROLE_LABELS[user.role]}
                 </span>
               )}
@@ -190,7 +145,6 @@ const Header: React.FC = () => {
                 onClick={toggleTheme}
                 className="theme-toggle-header"
                 aria-label="Toggle theme"
-                style={{ marginLeft: "1rem" }}
               >
                 {theme === "light" ? "Light Mode 🌙" : "Dark Mode ☀️"}
               </button>
@@ -199,10 +153,11 @@ const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Header */}
+      {/* Main header */}
       <header className="header">
         <div className="container">
           <div className="header-content">
+            {/* Logo */}
             <div className="logo">
               <Link
                 to={
@@ -219,155 +174,224 @@ const Header: React.FC = () => {
               </Link>
             </div>
 
-            {/* Mobile Menu Button */}
-            <button
-              className="mobile-menu-btn"
-              onClick={toggleMobileMenu}
-              aria-label="Toggle mobile menu"
-            >
-              <span></span>
-              <span></span>
-              <span></span>
-            </button>
-
-            {/* Navigation */}
-            <nav className={`nav ${isMobileMenuOpen ? "nav-open" : ""}`}>
+            {/* Desktop nav */}
+            <nav className="nav desktop-nav">
               <ul className="nav-menu">
-                {navigationItems.map((item) => (
-                  <li
-                    key={item.path}
-                    className={item.highlight ? "nav-highlight" : ""}
-                  >
-                    <Link to={item.path} onClick={closeMobileMenu}>
-                      {item.label}
-                    </Link>
+                {navItems.map((item) => (
+                  <li key={item.path}>
+                    <Link to={item.path}>{item.label}</Link>
                   </li>
                 ))}
 
                 {user ? (
-                  <>
-                    {/* User Role Badge */}
-                    <li className="user-info-mobile">
-                      <div
-                        className="role-badge"
-                        style={{
-                          backgroundColor: ROLE_COLORS[user.role],
-                        }}
+                  <li className="user-dropdown">
+                    <div className="dropdown">
+                      <button
+                        className="notification-btn"
+                        onClick={() => setShowNotifications(true)}
+                        title="Notifications"
                       >
-                        {ROLE_ICONS[user.role]} {ROLE_LABELS[user.role]}
-                      </div>
-                    </li>
-
-                    {/* User Menu Items */}
-                    {userMenuItems.map((item) => (
-                      <li key={item.path}>
-                        <Link to={item.path} onClick={closeMobileMenu}>
-                          {item.label}
-                        </Link>
-                      </li>
-                    ))}
-
-                    {/* User Profile Dropdown for Desktop */}
-                    <li className="user-dropdown">
-                      <div className="dropdown">
-                        {/* Notification Button */}
-                        <button
-                          className="notification-btn"
-                          onClick={() => setShowNotifications(true)}
-                          title="Notifications"
+                        🔔<span className="notification-badge">3</span>
+                      </button>
+                      <button className="dropdown-toggle">
+                        <span className="user-name">{user.fullName}</span>
+                        <div
+                          className="role-badge-small"
+                          style={{ backgroundColor: ROLE_COLORS[user.role] }}
                         >
-                          🔔
-                          <span className="notification-badge">3</span>
-                        </button>
-
-                        <button className="dropdown-toggle">
-                          <span className="user-name">{user.fullName}</span>
-                          <div
-                            className="role-badge-small"
-                            style={{
-                              backgroundColor: ROLE_COLORS[user.role],
-                            }}
-                          >
-                            {ROLE_ICONS[user.role]}
-                          </div>
-                        </button>
-                        <div className="dropdown-menu">
-                          {userMenuItems.map((item) => (
-                            <Link
-                              key={item.path}
-                              to={item.path}
-                              className="dropdown-item"
-                              onClick={closeMobileMenu}
-                            >
-                              {item.label}
-                            </Link>
-                          ))}
-                          <div className="dropdown-divider"></div>
-                          <button
-                            onClick={handleLogout}
-                            className="dropdown-item logout-btn"
-                          >
-                            Logout
-                          </button>
+                          {ROLE_ICONS[user.role]}
                         </div>
+                      </button>
+                      <div className="dropdown-menu">
+                        <div className="dropdown-divider" />
+                        <button
+                          onClick={handleLogout}
+                          className="dropdown-item logout-btn"
+                        >
+                          Logout
+                        </button>
                       </div>
-                    </li>
-
-                    {/* Mobile Logout */}
-                    <li className="mobile-only">
-                      <button
-                        onClick={handleLogout}
-                        className="btn btn-secondary"
-                      >
-                        Logout
-                      </button>
-                    </li>
-
-                    {/* Mobile Theme Toggle */}
-                    <li className="mobile-only">
-                      <button
-                        onClick={toggleTheme}
-                        className="btn btn-outline theme-toggle-mobile"
-                        aria-label="Toggle theme"
-                      >
-                        {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}
-                      </button>
-                    </li>
-                  </>
+                    </div>
+                  </li>
                 ) : (
-                  <>
-                    <li>
-                      <Link
-                        to="/login"
-                        className="btn btn-primary"
-                        onClick={closeMobileMenu}
-                      >
-                        Login
-                      </Link>
-                    </li>
-
-                    {/* Mobile Theme Toggle for non-logged users */}
-                    <li className="mobile-only">
-                      <button
-                        onClick={toggleTheme}
-                        className="btn btn-outline theme-toggle-mobile"
-                        aria-label="Toggle theme"
-                      >
-                        {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}
-                      </button>
-                    </li>
-                  </>
+                  <li>
+                    <Link to="/login" className="btn btn-primary">
+                      Login
+                    </Link>
+                  </li>
                 )}
               </ul>
             </nav>
+
+            {/* Hamburger — mobile only */}
+            <button
+              className="mobile-menu-btn"
+              onClick={toggleMobileMenu}
+              aria-label="Toggle mobile menu"
+              aria-expanded={isMobileMenuOpen}
+            >
+              <span
+                style={{
+                  display: "block",
+                  width: 25,
+                  height: 3,
+                  background: "var(--text-primary, #f1f5f9)",
+                  margin: "4px 0",
+                  transition: "0.3s",
+                  transform: isMobileMenuOpen
+                    ? "rotate(45deg) translate(5px,5px)"
+                    : "none",
+                }}
+              />
+              <span
+                style={{
+                  display: "block",
+                  width: 25,
+                  height: 3,
+                  background: "var(--text-primary, #f1f5f9)",
+                  margin: "4px 0",
+                  transition: "0.3s",
+                  opacity: isMobileMenuOpen ? 0 : 1,
+                }}
+              />
+              <span
+                style={{
+                  display: "block",
+                  width: 25,
+                  height: 3,
+                  background: "var(--text-primary, #f1f5f9)",
+                  margin: "4px 0",
+                  transition: "0.3s",
+                  transform: isMobileMenuOpen
+                    ? "rotate(-45deg) translate(5px,-5px)"
+                    : "none",
+                }}
+              />
+            </button>
           </div>
         </div>
       </header>
 
-      {/* Mobile Menu Overlay */}
-      {isMobileMenuOpen && (
-        <div className="mobile-menu-overlay" onClick={closeMobileMenu}></div>
-      )}
+      {/* ── Mobile drawer — fully inline styles, no CSS conflicts ── */}
+      <div style={overlayStyle} onClick={closeMobileMenu} aria-hidden="true" />
+
+      <div
+        style={drawerStyle}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Navigation menu"
+      >
+        {/* Close button */}
+        <button
+          style={closeBtnStyle}
+          onClick={closeMobileMenu}
+          aria-label="Close menu"
+        >
+          ✕
+        </button>
+
+        {/* User badge */}
+        {user && (
+          <div
+            style={{
+              padding: "0.75rem 1.5rem",
+              borderBottom: "1px solid var(--border-light, #21262d)",
+            }}
+          >
+            <div
+              className="role-badge"
+              style={{
+                backgroundColor: ROLE_COLORS[user.role],
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                padding: "0.4rem 0.9rem",
+                borderRadius: "20px",
+                fontSize: "0.875rem",
+                fontWeight: 600,
+              }}
+            >
+              {ROLE_ICONS[user.role]} {ROLE_LABELS[user.role]}
+            </div>
+            <div
+              style={{
+                marginTop: "0.4rem",
+                fontSize: "0.875rem",
+                color: "var(--text-secondary, #cbd5e1)",
+              }}
+            >
+              {user.fullName}
+            </div>
+          </div>
+        )}
+
+        {/* Nav links */}
+        {navItems.map((item) => (
+          <Link
+            key={item.path}
+            to={item.path}
+            style={navLinkStyle}
+            onClick={closeMobileMenu}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.background =
+                "var(--bg-secondary, #1e293b)")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.background = "transparent")
+            }
+          >
+            {item.label}
+          </Link>
+        ))}
+
+        {/* Theme toggle */}
+        <button
+          onClick={() => {
+            toggleTheme();
+          }}
+          style={{
+            ...navLinkStyle,
+            background: "none",
+            border: "none",
+            textAlign: "left",
+            width: "100%",
+            cursor: "pointer",
+          }}
+        >
+          {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}
+        </button>
+
+        {/* Logout */}
+        {user ? (
+          <button
+            onClick={handleLogout}
+            style={{
+              ...navLinkStyle,
+              background: "none",
+              border: "none",
+              textAlign: "left",
+              width: "100%",
+              cursor: "pointer",
+              color: "#ef4444",
+              borderBottom: "none",
+            }}
+          >
+            🚪 Logout
+          </button>
+        ) : (
+          <Link
+            to="/login"
+            style={{
+              ...navLinkStyle,
+              color: "var(--accent-gold, #d4af37)",
+              borderBottom: "none",
+            }}
+            onClick={closeMobileMenu}
+          >
+            Login →
+          </Link>
+        )}
+      </div>
 
       {/* Notification Center */}
       <NotificationCenter

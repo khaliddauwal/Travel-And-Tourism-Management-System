@@ -580,7 +580,9 @@ textarea:focus {
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 998;
+  z-index: 998; /* below nav panel */
+  pointer-events: auto;
+  cursor: pointer;
 }
 
 /* Responsive Design */
@@ -597,13 +599,15 @@ textarea:focus {
     position: fixed;
     top: 0;
     right: -100%;
-    width: 280px;
+    width: min(280px, 85vw);
     height: 100vh;
     background: var(--bg-primary);
     box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
     transition: right 0.3s ease;
-    z-index: 999;
+    z-index: 9999; /* well above overlay (998) and everything else */
     padding-top: 4rem;
+    overflow-y: auto;
+    pointer-events: auto;
   }
 
   /* Light mode mobile nav fixes */
@@ -7629,7 +7633,9 @@ label {
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
-  z-index: 999;
+  z-index: 998; /* MUST be lower than .nav (z-index: 9999) */
+  pointer-events: auto;
+  cursor: pointer;
 }
 
 /* Ensure navigation items don't overlap */
@@ -8879,4 +8885,1432 @@ label {
 
 .nav-menu li {
   white-space: normal !important;
+}
+
+/* ===================================================
+   COMPREHENSIVE RESPONSIVE FIXES
+   Covers: mobile phones, tablets, desktops
+   Breakpoints: 480px, 640px, 768px, 1024px
+   =================================================== */
+
+/* Prevent horizontal scroll globally */
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+/* Ensure all images are responsive */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Touch-friendly minimum tap target */
+button,
+a,
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
+
+/* ── Container ─────────────────────────────────────── */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+  box-sizing: border-box;
+}
+
+/* ── Header / Navigation ───────────────────────────── */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 1rem;
+}
+
+/* Logo never overflows */
+.logo a {
+  font-size: clamp(1.2rem, 4vw, 2rem);
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+/* Mobile hamburger always visible on small screens */
+@media (max-width: 768px) {
+  .mobile-menu-btn {
+    display: flex !important;
+    flex-shrink: 0;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mobile-menu-btn span {
+    display: block;
+  }
+
+  /* Slide-in nav panel */
+  .nav {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: min(280px, 85vw);
+    height: 100vh;
+    background: var(--bg-primary);
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+    transition: right 0.3s ease;
+    z-index: 9999; /* must be above overlay (998) */
+    padding-top: 4rem;
+    overflow-y: auto;
+    pointer-events: auto;
+  }
+
+  .nav-open {
+    right: 0;
+  }
+
+  .nav-menu {
+    flex-direction: column;
+    gap: 0;
+    padding: 0.5rem;
+  }
+
+  .nav-menu li {
+    width: 100%;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .nav-menu a,
+  .nav-menu .btn {
+    display: block;
+    padding: 0.875rem 1rem;
+    width: 100%;
+    min-height: 44px;
+    font-size: 0.9375rem;
+  }
+
+  /* Hide desktop dropdown on mobile */
+  .user-dropdown {
+    display: none !important;
+  }
+
+  .user-info-mobile {
+    display: block !important;
+    padding: 0.75rem 1rem;
+  }
+
+  .mobile-only {
+    display: block !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-menu-btn {
+    display: none !important;
+  }
+
+  .user-info-mobile,
+  .mobile-only {
+    display: none !important;
+  }
+}
+
+/* ── Hero Section ──────────────────────────────────── */
+/* Disable fixed background attachment on mobile (causes rendering bugs) */
+@media (max-width: 768px) {
+  .hero-section,
+  .adventure-hero,
+  .management-hero {
+    background-attachment: scroll !important;
+    min-height: 100svh;
+    min-height: 100vh;
+  }
+}
+
+/* Hero content layout */
+.hero-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  width: 100%;
+  padding: 2rem 1.25rem;
+}
+
+.hero-text h1,
+.hero-title,
+.adventure-title {
+  font-size: clamp(2rem, 6vw, 5rem);
+  line-height: 1.1;
+  word-break: break-word;
+}
+
+.hero-subtitle {
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+}
+
+@media (max-width: 768px) {
+  .hero-content {
+    flex-direction: column;
+    text-align: center;
+    padding: 3rem 1.25rem;
+    gap: 1.5rem;
+  }
+
+  .hero-text {
+    max-width: 100%;
+  }
+
+  .hero-actions {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .hero-stats,
+  .hero-stats-grid {
+    width: 100%;
+    min-width: 0 !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .system-stats {
+    min-width: 0 !important;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-content {
+    padding: 2rem 1rem;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .hero-actions .btn,
+  .btn-hero,
+  .btn-large {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .hero-stats,
+  .hero-stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── Hero Search Bar ───────────────────────────────── */
+.hero-search {
+  width: 100%;
+  max-width: 600px;
+  margin: 1.5rem auto;
+}
+
+.search-container {
+  display: flex;
+  width: 100%;
+  border-radius: 50px;
+  overflow: hidden;
+}
+
+@media (max-width: 640px) {
+  .search-container {
+    flex-direction: column;
+    border-radius: 12px;
+  }
+
+  .search-type {
+    border-right: none !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .search-input {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .search-button {
+    width: 100%;
+    min-height: 48px;
+    border-radius: 0 0 12px 12px;
+  }
+}
+
+/* ── Public Homepage Sections ──────────────────────── */
+.public-homepage {
+  overflow-x: hidden;
+}
+
+/* Featured destinations grid */
+.destinations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
+  gap: 1.5rem;
+}
+
+/* Testimonials */
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: 1.5rem;
+}
+
+.testimonial-card {
+  background: var(--card-bg);
+  border: 2px solid var(--border-light);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-card);
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.author-image {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+/* About section */
+.about-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+.about-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+/* CTA section */
+.cta-section {
+  background: var(--bg-secondary);
+  padding: 4rem 0;
+  text-align: center;
+}
+
+.cta-content h2 {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.section-header h2 {
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+}
+
+.section-header p {
+  color: var(--text-secondary);
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
+}
+
+.section-cta {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+@media (max-width: 768px) {
+  .about-content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .about-image {
+    order: -1;
+  }
+
+  .cta-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .cta-buttons .btn {
+    width: 100%;
+    max-width: 320px;
+    justify-content: center;
+  }
+}
+
+/* ── Destination Card ──────────────────────────────── */
+.destination-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.destination-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 1.25rem;
+}
+
+.destination-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.price-duration {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.price {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--accent-green, var(--primary-green));
+}
+
+.duration {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 480px) {
+  .destination-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .destination-footer .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ── Login & Register Forms ────────────────────────── */
+.login-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.login-form {
+  background: var(--card-bg);
+  border: 2px solid var(--border-light);
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-card);
+  width: 100%;
+}
+
+/* Register form wrapper */
+.register-form-wrapper {
+  max-width: 440px;
+  width: 100%;
+  margin: 0 auto;
+  background: var(--card-bg);
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-card);
+  border: 2px solid var(--border-light);
+}
+
+@media (max-width: 768px) {
+  .login-container {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .login-form {
+    padding: 1.5rem;
+  }
+
+  .register-form-wrapper {
+    padding: 1.5rem;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-form,
+  .register-form-wrapper {
+    padding: 1.25rem;
+    border-radius: 8px;
+  }
+}
+
+/* ── Forms General ─────────────────────────────────── */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+@media (max-width: 640px) {
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+/* All inputs touch-friendly */
+input,
+select,
+textarea,
+.form-input {
+  min-height: 44px;
+  font-size: 1rem; /* Prevents iOS zoom on focus */
+}
+
+/* Form actions */
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ── Dashboard Grids ───────────────────────────────── */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+  gap: 1.5rem;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-card {
+    padding: 1.25rem;
+  }
+}
+
+/* ── Bookings Summary / Visa Summary ───────────────── */
+.bookings-summary,
+.visa-summary {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .bookings-summary,
+  .visa-summary {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .visa-actions {
+    flex-direction: column;
+  }
+
+  .visa-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ── Booking Items ─────────────────────────────────── */
+.booking-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .booking-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .booking-status {
+    align-self: flex-start;
+  }
+}
+
+/* ── Package Grid ──────────────────────────────────── */
+.package-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+  gap: 1.5rem;
+}
+
+/* ── Package Details Page ──────────────────────────── */
+@media (max-width: 768px) {
+  /* PackageDetails uses inline grid style — override via class */
+  .package-details-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Sticky booking card becomes normal flow on mobile */
+  .booking-card-sticky {
+    position: static !important;
+  }
+}
+
+/* ── Admin / Management Pages ──────────────────────── */
+.package-management,
+.booking-management,
+.user-management {
+  padding: 1.5rem;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.page-header {
+  margin-bottom: 1.5rem;
+}
+
+.page-header h1 {
+  font-size: clamp(1.25rem, 4vw, 2rem);
+  word-break: break-word;
+}
+
+.management-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.search-filters {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.search-filters .search-input,
+.search-filters .filter-select {
+  min-width: 0;
+  flex: 1;
+}
+
+@media (max-width: 768px) {
+  .package-management,
+  .booking-management,
+  .user-management {
+    padding: 1rem;
+  }
+
+  .management-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-filters {
+    flex-direction: column;
+  }
+
+  .search-filters .search-input,
+  .search-filters .filter-select {
+    width: 100%;
+  }
+
+  .action-buttons {
+    justify-content: stretch;
+    flex-wrap: wrap;
+  }
+
+  .action-buttons .btn {
+    flex: 1;
+    min-width: 120px;
+    justify-content: center;
+  }
+}
+
+/* ── Data Tables ───────────────────────────────────── */
+.data-table-wrapper,
+.admin-table {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.data-table {
+  min-width: 600px; /* Ensures table doesn't collapse */
+}
+
+@media (max-width: 768px) {
+  .data-table th,
+  .data-table td {
+    padding: 0.625rem 0.75rem;
+    font-size: 0.8125rem;
+  }
+
+  .table-pagination {
+    flex-direction: column;
+    gap: 0.75rem;
+    text-align: center;
+  }
+
+  .pagination-controls {
+    justify-content: center;
+  }
+}
+
+/* ── Modals ────────────────────────────────────────── */
+.modal-overlay {
+  padding: 1rem;
+  align-items: flex-end; /* Bottom sheet on mobile */
+}
+
+.modal-content {
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 16px;
+}
+
+@media (max-width: 640px) {
+  .modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modal-content {
+    max-width: 100%;
+    border-radius: 16px 16px 0 0;
+    max-height: 92vh;
+  }
+
+  .modal-footer {
+    flex-direction: column;
+  }
+
+  .modal-footer .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ── Status Tabs ───────────────────────────────────── */
+.status-tabs {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.status-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.status-tab {
+  white-space: nowrap;
+  min-height: 44px;
+}
+
+/* ── Features / Reasons Grids ──────────────────────── */
+.features-grid,
+.reasons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: 1.5rem;
+}
+
+/* ── Quick Access Grid ─────────────────────────────── */
+.quick-access-grid,
+.dashboard-quick-access {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+  gap: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .quick-access-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .card-arrow {
+    display: none;
+  }
+}
+
+/* ── Vacation / Exploration 2-col layouts ──────────── */
+.vacation-content,
+.exploration-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+@media (max-width: 1024px) {
+  .vacation-content,
+  .exploration-content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .vacation-images {
+    height: auto !important;
+  }
+
+  .main-image,
+  .secondary-image {
+    height: 250px;
+  }
+
+  .curved-arrow {
+    display: none;
+  }
+}
+
+/* ── Adventure Hero Title ──────────────────────────── */
+.adventure-title {
+  font-size: clamp(2.5rem, 8vw, 8rem);
+}
+
+.adventure-subtitle {
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+}
+
+/* ── Hero Features Row ─────────────────────────────── */
+.hero-features {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .hero-features {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .hero-feature {
+    width: 100%;
+    max-width: 320px;
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+/* ── Section Padding ───────────────────────────────── */
+.section {
+  padding: clamp(2rem, 5vw, 4rem) 0;
+}
+
+.featured-section,
+.features-section,
+.testimonials-section,
+.about-section,
+.cta-section,
+.nature-destinations,
+.reasons-section,
+.vacation-perfect,
+.vacation-highlights,
+.exploration-section,
+.destinations-section,
+.management-features,
+.highlights-section,
+.quick-access-section,
+.activity-section {
+  padding: clamp(2.5rem, 5vw, 6rem) 0;
+}
+
+/* ── Section Title ─────────────────────────────────── */
+.section-title {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+/* ── Dashboard Header ──────────────────────────────── */
+.dashboard-header h2 {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+/* ── Buttons touch-friendly ────────────────────────── */
+.btn {
+  min-height: 44px;
+  padding: 0.75rem 1.25rem;
+}
+
+.btn-sm {
+  min-height: 36px;
+  padding: 0.5rem 0.875rem;
+}
+
+/* ── Notification badge ────────────────────────────── */
+.notification-btn {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.25rem;
+  padding: 0.5rem;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #ef4444;
+  color: white;
+  font-size: 0.625rem;
+  font-weight: 700;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Visa Form ─────────────────────────────────────── */
+.visa-request-form,
+.visa-status-dashboard,
+.admin-visa-management {
+  max-width: 100%;
+  padding: clamp(1rem, 3vw, 2rem);
+}
+
+/* ── Footer ────────────────────────────────────────── */
+.footer-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+  gap: 2rem;
+}
+
+@media (max-width: 480px) {
+  .footer-content {
+    grid-template-columns: 1fr;
+  }
+
+  .footer {
+    padding: 2rem 0 1rem;
+  }
+}
+
+/* ── Misc overflow fixes ───────────────────────────── */
+.top-header-right {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .top-header {
+    display: none;
+  }
+}
+
+/* ── Banner (legacy) ───────────────────────────────── */
+.banner {
+  min-height: clamp(250px, 50vw, 430px);
+  padding: 2rem 1rem;
+}
+
+.banner h1 {
+  font-size: clamp(1.5rem, 5vw, 3rem);
+}
+
+.banner p {
+  font-size: clamp(0.9rem, 2vw, 1.25rem);
+}
+
+/* ── Tablet-specific tweaks (641px – 1024px) ───────── */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .destinations-grid,
+  .package-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .features-grid,
+  .reasons-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .testimonials-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .hero-stats,
+  .hero-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* ── Package Details Responsive Layout ─────────────── */
+@media (max-width: 768px) {
+  .package-details-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .booking-card-sticky {
+    position: static !important;
+    top: auto !important;
+  }
+}
+
+/* ── Tourist Bookings Page ──────────────────────────── */
+.filter-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 0.25rem;
+}
+
+.filter-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.filter-tab {
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-light);
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+  min-height: 36px;
+}
+
+.filter-tab:hover {
+  border-color: var(--primary-blue);
+  color: var(--primary-blue);
+}
+
+.filter-tab.active {
+  background: var(--primary-blue);
+  border-color: var(--primary-blue);
+  color: white;
+}
+
+.bookings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr));
+  gap: 1.5rem;
+}
+
+.booking-card {
+  background: var(--card-bg);
+  border: 2px solid var(--border-light);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-card);
+  transition: all 0.3s ease;
+}
+
+.booking-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.booking-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.booking-header h3 {
+  color: var(--primary-blue);
+  font-size: 1.1rem;
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
+}
+
+.booking-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0;
+  border-bottom: 1px solid var(--border-light);
+  flex-wrap: wrap;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+.detail-value {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-align: right;
+}
+
+.booking-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.booking-actions .btn {
+  flex: 1;
+  min-width: 100px;
+  justify-content: center;
+}
+
+@media (max-width: 480px) {
+  .booking-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .detail-value {
+    text-align: left;
+  }
+
+  .booking-actions {
+    flex-direction: column;
+  }
+
+  .booking-actions .btn {
+    width: 100%;
+  }
+}
+
+/* ===================================================
+   MOBILE NAV CLICK FIX — z-index hierarchy
+   overlay: 998  <  nav panel: 9999
+   =================================================== */
+
+/* Overlay: behind the nav panel, closes menu on tap */
+.mobile-menu-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+  z-index: 998 !important;
+  pointer-events: auto !important;
+  cursor: pointer;
+}
+
+/* Nav panel: always above the overlay */
+@media (max-width: 768px) {
+  .nav {
+    position: fixed !important;
+    top: 0 !important;
+    right: -100% !important;
+    width: min(300px, 88vw) !important;
+    height: 100vh !important;
+    z-index: 9999 !important;
+    pointer-events: auto !important;
+    overflow-y: auto !important;
+    padding-top: 3.5rem !important;
+    background: var(--bg-primary) !important;
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.25) !important;
+    transition: right 0.3s ease !important;
+  }
+
+  .nav-open {
+    right: 0 !important;
+  }
+
+  /* Every link and button inside the nav must be clickable */
+  .nav *,
+  .nav-menu *,
+  .nav-menu a,
+  .nav-menu button,
+  .nav-menu li {
+    pointer-events: auto !important;
+    position: relative;
+    z-index: 10000;
+  }
+
+  /* Touch-friendly tap targets */
+  .nav-menu a,
+  .nav-menu button {
+    display: block !important;
+    width: 100% !important;
+    min-height: 48px !important;
+    padding: 0.875rem 1.25rem !important;
+    font-size: 0.9375rem !important;
+    text-align: left !important;
+    cursor: pointer !important;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .nav-menu li {
+    width: 100% !important;
+    border-bottom: 1px solid var(--border-light);
+    display: block !important;
+  }
+
+  /* Mobile-only items visible */
+  .mobile-only {
+    display: block !important;
+  }
+
+  /* Desktop dropdown hidden on mobile */
+  .user-dropdown {
+    display: none !important;
+  }
+}
+
+/* Close button inside nav panel */
+.nav-close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--bg-tertiary);
+  border: 2px solid var(--border-light);
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.125rem;
+  cursor: pointer;
+  color: var(--text-primary);
+  z-index: 10001;
+  pointer-events: auto !important;
+  transition: background 0.2s ease;
+}
+
+.nav-close-btn:hover {
+  background: var(--bg-secondary);
+}
+
+@media (max-width: 768px) {
+  .nav-close-btn {
+    display: flex !important;
+  }
+}
+
+/* Ensure header itself doesn't create a blocking stacking context */
+.header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
+  /* Do NOT use z-index higher than 998 here — nav panel escapes via fixed positioning */
+}
+
+/* Remove any overflow:hidden that could clip the fixed nav */
+.header,
+.header .container,
+.header-content {
+  overflow: visible !important;
+}
+
+/* ===================================================
+   HEADER FINAL FIX — clean slate for nav
+   =================================================== */
+
+/* Desktop nav: visible, flex row */
+.desktop-nav {
+  display: flex;
+  align-items: center;
+}
+
+/* Hamburger: hidden on desktop */
+.mobile-menu-btn {
+  display: none;
+  flex-direction: column;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  /* Show hamburger, hide desktop nav */
+  .mobile-menu-btn {
+    display: flex !important;
+  }
+
+  .desktop-nav {
+    display: none !important;
+  }
+
+  /* Header row: logo left, hamburger right */
+  .header-content {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    padding: 0.5rem 0 !important;
+  }
+
+  /* Logo doesn't overflow */
+  .logo a {
+    font-size: clamp(1rem, 4vw, 1.5rem) !important;
+    line-height: 1.2 !important;
+  }
+}
+
+/* ── Traveler Reviews ───────────────────────────────── */
+.author-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--primary-blue, #3f84b1);
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.author-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.author-info strong {
+  color: var(--text-primary);
+  font-size: 0.9375rem;
+}
+
+.author-info span {
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+}
+
+.testimonial-comment {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-style: italic;
+  margin: 0.75rem 0 1rem;
+  flex: 1;
+}
+
+.testimonial-rating {
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+}
+
+/* Empty state for reviews */
+.reviews-empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.reviews-empty-icon {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+}
+
+.reviews-empty-state h3 {
+  color: var(--text-primary);
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.reviews-empty-state p {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
 }

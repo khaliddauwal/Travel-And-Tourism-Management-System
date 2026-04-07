@@ -89,7 +89,7 @@ const PackageDetails: React.FC = () => {
             alt={package_.name}
             style={{
               width: "100%",
-              height: "400px",
+              height: "clamp(200px, 40vw, 400px)",
               objectFit: "cover",
               borderRadius: "12px",
               marginBottom: "2rem",
@@ -119,6 +119,7 @@ const PackageDetails: React.FC = () => {
 
         {/* ── Main grid: details + booking card ──────────────────────────── */}
         <div
+          className="package-details-layout"
           style={{
             display: "grid",
             gridTemplateColumns: "minmax(0, 2fr) minmax(280px, 1fr)",
@@ -253,6 +254,7 @@ const PackageDetails: React.FC = () => {
 
           {/* Right column — booking card */}
           <div
+            className="booking-card-sticky"
             style={{
               ...card,
               position: "sticky",

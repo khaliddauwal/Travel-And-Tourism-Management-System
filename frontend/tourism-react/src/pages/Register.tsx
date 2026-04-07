@@ -59,16 +59,7 @@ const Register: React.FC = () => {
   return (
     <section className="section">
       <div className="container">
-        <div
-          style={{
-            maxWidth: "400px",
-            margin: "0 auto",
-            background: "var(--card-bg, #ffffff)",
-            padding: "3rem",
-            borderRadius: "8px",
-            boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-          }}
-        >
+        <div className="register-form-wrapper">
           <h2
             style={{
               textAlign: "center",
