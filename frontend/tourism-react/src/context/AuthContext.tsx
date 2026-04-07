@@ -55,17 +55,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is already logged in (from localStorage for demo)
     const checkAuth = async () => {
       try {
-        const savedUser = localStorage.getItem("demoUser");
+        const savedUser = localStorage.getItem("authUser");
         if (savedUser) {
           const userData = JSON.parse(savedUser);
           setUser(userData);
         }
       } catch (error) {
         console.error("Auth check failed:", error);
-        localStorage.removeItem("demoUser");
+        localStorage.removeItem("authUser");
       } finally {
         setLoading(false);
       }
@@ -94,7 +93,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       };
 
       setUser(userData);
-      localStorage.setItem("demoUser", JSON.stringify(userData));
+      localStorage.setItem("authUser", JSON.stringify(userData));
       return true;
     } catch (error: any) {
       console.error("Login failed:", error);
@@ -131,7 +130,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       };
 
       setUser(newUser);
-      localStorage.setItem("demoUser", JSON.stringify(newUser));
+      localStorage.setItem("authUser", JSON.stringify(newUser));
       return true;
     } catch (error: any) {
       console.error("Registration failed:", error);
@@ -144,7 +143,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("demoUser");
+    localStorage.removeItem("authUser");
     localStorage.removeItem("authToken");
     apiService.logout().catch(console.error);
   };

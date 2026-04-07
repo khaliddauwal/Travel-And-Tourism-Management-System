@@ -4,7 +4,7 @@ export interface User {
   fullName: string;
   email: string;
   mobileNumber: string;
-  role: 'tourist' | 'agent' | 'admin';
+  role: 'tourist' | 'admin';
   status: 'active' | 'inactive' | 'suspended';
   registrationDate: string;
   lastLogin?: string;

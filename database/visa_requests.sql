@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS visa_requests (
     INDEX idx_submitted_at (submitted_at)
 );
 
--- Insert sample data for demonstration
+-- Insert sample data
 INSERT INTO visa_requests (user_id, destination_country, travel_purpose, intended_travel_date, passport_number, status, admin_comments) VALUES
 (1, 'United States', 'tourism', '2024-06-15', 'A12345678', 'under_review', 'Documents received. Processing in progress.'),
 (1, 'United Kingdom', 'business', '2024-08-20', 'A12345678', 'approved', 'Application approved. Please proceed with embassy appointment.'),

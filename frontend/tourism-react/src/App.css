@@ -1780,11 +1780,6 @@ select:focus {
   color: var(--primary-blue);
 }
 
-/* Agent Dashboard */
-.agent-dashboard .dashboard-card {
-  border-left: 4px solid #3b82f6;
-}
-
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -2161,61 +2156,6 @@ select:focus {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.demo-accounts {
-  background: #f8f9fa;
-  padding: 2rem;
-  border-radius: 12px;
-  border: 2px solid var(--primary-blue);
-}
-
-.demo-accounts h3 {
-  color: var(--primary-blue);
-  margin-bottom: 1rem;
-}
-
-.demo-accounts-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  margin-top: 1.5rem;
-}
-
-.demo-account-card {
-  background: white;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.demo-account-header {
-  padding: 1rem;
-  background: #f8f9fa;
-  border-bottom: 1px solid #e4e4e4;
-}
-
-.demo-account-content {
-  padding: 1.5rem;
-}
-
-.demo-account-content h4 {
-  margin: 0 0 0.5rem 0;
-  color: var(--primary-blue);
-}
-
-.demo-description {
-  color: var(--text-gray);
-  font-size: 0.875rem;
-  margin-bottom: 1rem;
-  line-height: 1.4;
-}
-
-.demo-credentials {
-  background: #f8f9fa;
-  padding: 1rem;
-  border-radius: 4px;
-  margin-bottom: 1rem;
-}
-
 /* Unauthorized Access */
 .unauthorized-access {
   text-align: center;
@@ -2296,10 +2236,6 @@ select:focus {
 
   .login-form {
     padding: 2rem;
-  }
-
-  .demo-accounts {
-    padding: 1.5rem;
   }
 
   .unauthorized-actions {
@@ -4490,64 +4426,6 @@ label {
   transition:
     background-color 0.3s ease,
     border-color 0.3s ease;
-}
-
-.demo-accounts {
-  background: var(--bg-secondary);
-  border: 2px solid var(--primary-blue);
-  padding: 2rem;
-  border-radius: 12px;
-  transition: background-color 0.3s ease;
-}
-
-.demo-account-card {
-  background: var(--card-bg);
-  border: 1px solid var(--border-light);
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: var(--shadow-card);
-  transition:
-    background-color 0.3s ease,
-    border-color 0.3s ease;
-}
-
-.demo-account-header {
-  padding: 1rem;
-  background: var(--bg-tertiary);
-  border-bottom: 1px solid var(--border-color);
-  transition:
-    background-color 0.3s ease,
-    border-color 0.3s ease;
-}
-
-.demo-account-content {
-  padding: 1.5rem;
-}
-
-.demo-account-content h4 {
-  color: var(--text-primary);
-  margin-bottom: 0.5rem;
-}
-
-.demo-description {
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-  margin-bottom: 1rem;
-}
-
-.demo-credentials {
-  background: var(--bg-tertiary);
-  padding: 0.75rem;
-  border-radius: 4px;
-  margin-bottom: 1rem;
-  border: 1px solid var(--border-color);
-  transition:
-    background-color 0.3s ease,
-    border-color 0.3s ease;
-}
-
-.demo-credentials small {
-  color: var(--text-secondary);
 }
 
 /* Responsive Design for Home Page */

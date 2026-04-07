@@ -48,7 +48,7 @@ CREATE TABLE `users` (
 -- Default users (password for both: "password")
 INSERT INTO `users` (`full_name`, `email`, `mobile`, `password`, `role_id`, `status`, `email_verified`) VALUES
 ('System Administrator', 'admin@tms.com', '08012345678', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 1, 'active', 1),
-('Demo Tourist', 'tourist@tms.com', '08034567890', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 2, 'active', 1);
+('Tourist User', 'tourist@tms.com', '08034567890', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 2, 'active', 1);
 
 -- ============================================
 -- 3. TRAVEL PACKAGES TABLE

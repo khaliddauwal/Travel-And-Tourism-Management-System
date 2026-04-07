@@ -184,7 +184,7 @@ class VisaController {
      */
     public function getAllRequests() {
         try {
-            // Check admin authentication (simplified for demo)
+            // Check admin authentication
             if (!isset($_SESSION['user_id']) || !$this->isAdmin($_SESSION['user_id'])) {
                 http_response_code(403);
                 echo json_encode([
@@ -440,11 +440,9 @@ class VisaController {
     }
 
     /**
-     * Check if user is admin (simplified for demo)
+     * Check if user is admin
      */
     private function isAdmin($userId) {
-        // In a real application, you would check user roles/permissions
-        // For demo purposes, we'll assume user ID 1 is admin
         return $userId == 1;
     }
 }

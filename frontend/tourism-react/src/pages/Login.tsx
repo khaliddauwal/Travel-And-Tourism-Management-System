@@ -2,18 +2,11 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../components/Toast";
-import {
-  ROLE_LABELS,
-  ROLE_DESCRIPTIONS,
-  ROLE_COLORS,
-  ROLE_ICONS,
-} from "../types/roles";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [showDemoAccounts, setShowDemoAccounts] = useState(false);
 
   const { login } = useAuth();
   const { showToast } = useToast();
@@ -37,27 +30,6 @@ const Login: React.FC = () => {
     e.preventDefault();
     doLogin(email, password);
   };
-
-  const handleDemoLogin = (demoEmail: string, demoPassword: string) => {
-    setEmail(demoEmail);
-    setPassword(demoPassword);
-    doLogin(demoEmail, demoPassword);
-  };
-
-  const demoAccounts = [
-    {
-      role: "tourist" as const,
-      email: "tourist@tms.com",
-      password: "Tourist@123",
-      name: "Demo Tourist",
-    },
-    {
-      role: "admin" as const,
-      email: "admin@tms.com",
-      password: "Admin@123",
-      name: "System Administrator",
-    },
-  ];
 
   return (
     <section className="section">
@@ -123,67 +95,7 @@ const Login: React.FC = () => {
                 </Link>
               </p>
             </div>
-
-            {/* Demo Accounts Toggle */}
-            <div style={{ textAlign: "center", marginTop: "1rem" }}>
-              <button
-                type="button"
-                onClick={() => setShowDemoAccounts(!showDemoAccounts)}
-                className="btn btn-outline"
-                style={{ fontSize: "0.875rem" }}
-              >
-                {showDemoAccounts ? "Hide" : "Show"} Demo Accounts
-              </button>
-            </div>
           </div>
-
-          {/* Demo Accounts Panel */}
-          {showDemoAccounts && (
-            <div className="demo-accounts">
-              <h3>🎭 Demo Accounts</h3>
-              <p>Try different user roles with these demo accounts:</p>
-
-              <div className="demo-accounts-grid">
-                {demoAccounts.map((account) => (
-                  <div key={account.role} className="demo-account-card">
-                    <div className="demo-account-header">
-                      <div
-                        className="role-badge"
-                        style={{
-                          backgroundColor: ROLE_COLORS[account.role],
-                        }}
-                      >
-                        {ROLE_ICONS[account.role]} {ROLE_LABELS[account.role]}
-                      </div>
-                    </div>
-                    <div className="demo-account-content">
-                      <h4>{account.name}</h4>
-                      <p className="demo-description">
-                        {ROLE_DESCRIPTIONS[account.role]}
-                      </p>
-                      <div className="demo-credentials">
-                        <small>
-                          <strong>Email:</strong> {account.email}
-                          <br />
-                          <strong>Password:</strong> {account.password}
-                        </small>
-                      </div>
-                      <button
-                        onClick={() =>
-                          handleDemoLogin(account.email, account.password)
-                        }
-                        className="btn btn-primary"
-                        disabled={loading}
-                        style={{ width: "100%", marginTop: "1rem" }}
-                      >
-                        Login as {ROLE_LABELS[account.role]}
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </section>
