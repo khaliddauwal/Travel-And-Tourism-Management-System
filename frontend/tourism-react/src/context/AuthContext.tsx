@@ -32,8 +32,6 @@ interface RegisterData {
   email: string;
   password: string;
   mobileNumber: string;
-  role?: UserRole;
-  accountType?: string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);

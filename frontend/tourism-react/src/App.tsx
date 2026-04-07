@@ -157,9 +157,7 @@ function App() {
                     <Route
                       path="/admin/dashboard"
                       element={
-                        <RoleBasedRoute
-                          allowedRoles={["admin", "administrator"]}
-                        >
+                        <RoleBasedRoute allowedRoles={["admin"]}>
                           <AdminDashboard />
                         </RoleBasedRoute>
                       }
@@ -167,9 +165,7 @@ function App() {
                     <Route
                       path="/admin/users"
                       element={
-                        <RoleBasedRoute
-                          allowedRoles={["admin", "administrator"]}
-                        >
+                        <RoleBasedRoute allowedRoles={["admin"]}>
                           <UserManagement />
                         </RoleBasedRoute>
                       }
@@ -177,9 +173,7 @@ function App() {
                     <Route
                       path="/admin/packages"
                       element={
-                        <RoleBasedRoute
-                          allowedRoles={["admin", "administrator"]}
-                        >
+                        <RoleBasedRoute allowedRoles={["admin"]}>
                           <PackageManagement />
                         </RoleBasedRoute>
                       }
@@ -187,9 +181,7 @@ function App() {
                     <Route
                       path="/admin/bookings"
                       element={
-                        <RoleBasedRoute
-                          allowedRoles={["admin", "administrator"]}
-                        >
+                        <RoleBasedRoute allowedRoles={["admin"]}>
                           <BookingManagement />
                         </RoleBasedRoute>
                       }
@@ -197,9 +189,7 @@ function App() {
                     <Route
                       path="/admin/visa"
                       element={
-                        <RoleBasedRoute
-                          allowedRoles={["admin", "administrator"]}
-                        >
+                        <RoleBasedRoute allowedRoles={["admin"]}>
                           <AdminVisaManagement />
                         </RoleBasedRoute>
                       }
@@ -207,9 +197,7 @@ function App() {
                     <Route
                       path="/admin/reports"
                       element={
-                        <RoleBasedRoute
-                          allowedRoles={["admin", "administrator"]}
-                        >
+                        <RoleBasedRoute allowedRoles={["admin"]}>
                           <div className="page-content">
                             <h1>📊 Admin Reports</h1>
                             <p>Reports and analytics coming soon...</p>
@@ -220,9 +208,7 @@ function App() {
                     <Route
                       path="/admin/settings"
                       element={
-                        <RoleBasedRoute
-                          allowedRoles={["admin", "administrator"]}
-                        >
+                        <RoleBasedRoute allowedRoles={["admin"]}>
                           <div className="page-content">
                             <h1>⚙️ System Settings</h1>
                             <p>Settings management coming soon...</p>

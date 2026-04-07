@@ -143,8 +143,6 @@ class UserController {
         $validator->phone('mobile', $data['mobile'] ?? '');
         $validator->required('password', $data['password'] ?? '');
         $validator->minLength('password', $data['password'] ?? '', 6);
-        $validator->required('role_id', $data['role_id'] ?? '');
-        $validator->integer('role_id', $data['role_id'] ?? '');
 
         if ($validator->fails()) {
             Response::validationError($validator->getErrors());
@@ -162,6 +160,27 @@ class UserController {
             Response::error("Email already registered", 409);
         }
 
+        // Resolve role: accept either role name (string) or role_id (int)
+        $roleId = null;
+        if (!empty($data['role_id']) && is_numeric($data['role_id'])) {
+            $roleId = (int)$data['role_id'];
+        } elseif (!empty($data['role'])) {
+            $roleName = $data['role'] === 'admin' ? 'administrator' : $data['role'];
+            $rs = $this->conn->prepare("SELECT id FROM roles WHERE name = :name LIMIT 1");
+            $rs->bindValue(':name', $roleName);
+            $rs->execute();
+            $roleRow = $rs->fetch();
+            if (!$roleRow) {
+                Response::error("Invalid role: " . $data['role'], 400);
+            }
+            $roleId = (int)$roleRow['id'];
+        } else {
+            // Default to tourist
+            $rs = $this->conn->prepare("SELECT id FROM roles WHERE name = 'tourist' LIMIT 1");
+            $rs->execute();
+            $roleId = (int)($rs->fetch()['id'] ?? 2);
+        }
+
         // Hash password
         $hashedPassword = password_hash($data['password'], PASSWORD_BCRYPT);
 
@@ -174,7 +193,7 @@ class UserController {
         $stmt->bindParam(':email', $validData['email']);
         $stmt->bindParam(':mobile', $validData['mobile']);
         $stmt->bindParam(':password', $hashedPassword);
-        $stmt->bindParam(':role_id', $validData['role_id']);
+        $stmt->bindValue(':role_id', $roleId, PDO::PARAM_INT);
         $stmt->bindValue(':status', $data['status'] ?? 'active');
 
         if ($stmt->execute()) {

@@ -57,11 +57,6 @@ export const ROLE_LABELS: Record<UserRole, string> = {
   admin: 'Administrator',
 };
 
-export const ROLE_DESCRIPTIONS: Record<UserRole, string> = {
-  tourist: 'Browse and book travel packages, manage personal bookings and visa requests',
-  admin: 'Full system access including user management, packages, bookings, visa requests, settings, and reports',
-};
-
 export const ROLE_COLORS: Record<UserRole, string> = {
   tourist: '#10b981', // Green
   admin: '#ef4444',   // Red
