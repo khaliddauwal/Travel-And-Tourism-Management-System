@@ -10356,3 +10356,54 @@ textarea,
     background: rgba(0, 0, 0, 0.35) !important;
   }
 }
+
+/* ===================================================
+   FIX: Light mode hero blurry text on mobile
+   Cause 1: --overlay-hero in light mode is near-white (rgba 246,248,250,0.85)
+            which washes out text and triggers blurry GPU re-render
+   Cause 2: background-attachment:fixed not removed from [data-theme="light"]
+            override (only the base rule was fixed previously)
+   =================================================== */
+
+@media (max-width: 768px) {
+  /* Fix light mode overlay — use a dark semi-transparent overlay
+     so white text stays readable and crisp */
+  [data-theme="light"] {
+    --overlay-hero: rgba(20, 40, 80, 0.65);
+  }
+
+  /* Remove fixed attachment from the light mode override too */
+  [data-theme="light"] .hero-section,
+  [data-theme="light"] .adventure-hero,
+  [data-theme="light"] .management-hero {
+    background-attachment: scroll !important;
+  }
+
+  /* Ensure the ::before overlay uses the corrected variable */
+  [data-theme="light"] .hero-section::before,
+  [data-theme="light"] .adventure-hero .hero-overlay,
+  [data-theme="light"] .management-hero .hero-overlay {
+    background: rgba(20, 40, 80, 0.65) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* Keep text white and crisp in light mode on mobile */
+  [data-theme="light"] .hero-text h1,
+  [data-theme="light"] .hero-title,
+  [data-theme="light"] .adventure-title {
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    -webkit-text-fill-color: #ffffff !important;
+    background-clip: unset !important;
+    color: #ffffff !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7) !important;
+    transform: translateZ(0);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  [data-theme="light"] .hero-subtitle {
+    color: rgba(255, 255, 255, 0.95) !important;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6) !important;
+  }
+}
